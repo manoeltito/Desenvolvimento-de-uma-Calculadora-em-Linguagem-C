@@ -1,0 +1,252 @@
+/* 
+ * Calculadora em ANSI C89
+ * Projeto portável para qualquer compilador C
+ */
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <ctype.h>
+
+/* Protótipos das funções */
+void decimalParaBinario(int n);
+void decimalParaHexadecimal(int n);
+void decimalParaOctal(int n);
+int hexadecimalParaDecimal(char hex[]);
+int binarioParaDecimal(char bin[]);
+int octalParaDecimal(char oct[]);
+void mostrarConversao(int dec);
+void calculadoraAritmetica(void);
+void calculadoraProgramador(void);
+void limparBuffer(void);
+
+/* Função principal */
+int main(void)
+{
+    int escolha;
+    
+    do {
+        printf("\n=== CALCULADORA EM C ===\n");
+        printf("1 - Calculadora Aritmetica\n");
+        printf("2 - Calculadora do Programador (Bases)\n");
+        printf("3 - Sair\n");
+        printf("Escolha: ");
+        scanf("%d", &escolha);
+        limparBuffer();
+        
+        switch(escolha) {
+            case 1:
+                calculadoraAritmetica();
+                break;
+            case 2:
+                calculadoraProgramador();
+                break;
+            case 3:
+                printf("Encerrando...\n");
+                break;
+            default:
+                printf("Opcao invalida! Tente novamente.\n");
+        }
+    } while(escolha != 3);
+    
+    return 0;
+}
+
+/* Limpa o buffer do teclado para evitar problemas com entrada */
+void limparBuffer(void)
+{
+    int c;
+    while ((c = getchar()) != '\n' && c != EOF);
+}
+
+/* Converte decimal para binario (recursivo) */
+void decimalParaBinario(int n)
+{
+    if (n > 1) {
+        decimalParaBinario(n / 2);
+    }
+    printf("%d", n % 2);
+}
+
+/* Converte decimal para hexadecimal (recursivo) */
+void decimalParaHexadecimal(int n)
+{
+    int resto;
+    
+    if (n >= 16) {
+        decimalParaHexadecimal(n / 16);
+    }
+    
+    resto = n % 16;
+    if (resto < 10) {
+        printf("%d", resto);
+    } else {
+        printf("%c", 'A' + (resto - 10));
+    }
+}
+
+/* Converte decimal para octal (recursivo) */
+void decimalParaOctal(int n)
+{
+    if (n >= 8) {
+        decimalParaOctal(n / 8);
+    }
+    printf("%d", n % 8);
+}
+
+/* Converte hexadecimal para decimal */
+int hexadecimalParaDecimal(char hex[])
+{
+    int len, i, base, dec;
+    char c;
+    
+    len = strlen(hex);
+    base = 1;
+    dec = 0;
+    
+    for (i = len - 1; i >= 0; i--) {
+        c = hex[i];
+        if (c >= '0' && c <= '9') {
+            dec = dec + (c - 48) * base;
+            base = base * 16;
+        } else if (c >= 'A' && c <= 'F') {
+            dec = dec + (c - 55) * base;
+            base = base * 16;
+        } else if (c >= 'a' && c <= 'f') {
+            dec = dec + (c - 87) * base;
+            base = base * 16;
+        }
+    }
+    return dec;
+}
+
+/* Converte binario para decimal */
+int binarioParaDecimal(char bin[])
+{
+    int len, i, dec, base;
+    
+    len = strlen(bin);
+    dec = 0;
+    base = 1;
+    
+    for (i = len - 1; i >= 0; i--) {
+        if (bin[i] == '1') {
+            dec = dec + base;
+        }
+        base = base * 2;
+    }
+    return dec;
+}
+
+/* Converte octal para decimal */
+int octalParaDecimal(char oct[])
+{
+    int len, i, dec, base;
+    
+    len = strlen(oct);
+    dec = 0;
+    base = 1;
+    
+    for (i = len - 1; i >= 0; i--) {
+        dec = dec + (oct[i] - '0') * base;
+        base = base * 8;
+    }
+    return dec;
+}
+
+/* Mostra o valor nas 4 bases */
+void mostrarConversao(int dec)
+{
+    printf("\n--- Conversao do valor %d ---\n", dec);
+    printf("HEX     ");
+    decimalParaHexadecimal(dec);
+    printf("\nDEC     %d\n", dec);
+    printf("OCT     ");
+    decimalParaOctal(dec);
+    printf("\nBIN     ");
+    decimalParaBinario(dec);
+    printf("\n");
+}
+
+/* Calculadora aritmetica basica */
+void calculadoraAritmetica(void)
+{
+    double num1, num2;
+    char op;
+    
+    printf("\n--- Calculadora Aritmetica ---\n");
+    printf("Digite a operacao (ex: 5 + 3): ");
+    scanf("%lf %c %lf", &num1, &op, &num2);
+    limparBuffer();
+    
+    switch(op) {
+        case '+':
+            printf("Resultado: %.2lf\n", num1 + num2);
+            break;
+        case '-':
+            printf("Resultado: %.2lf\n", num1 - num2);
+            break;
+        case '*':
+            printf("Resultado: %.2lf\n", num1 * num2);
+            break;
+        case '/':
+            if(num2 != 0) {
+                printf("Resultado: %.2lf\n", num1 / num2);
+            } else {
+                printf("Erro: divisao por zero!\n");
+            }
+            break;
+        default:
+            printf("Operador invalido!\n");
+    }
+}
+
+/* Calculadora do programador (conversao entre bases) */
+void calculadoraProgramador(void)
+{
+    int opcao;
+    char entrada[100];
+    int valorDecimal;
+    
+    printf("\n--- Calculadora do Programador ---\n");
+    printf("1 - Converter de Decimal\n");
+    printf("2 - Converter de Hexadecimal\n");
+    printf("3 - Converter de Binario\n");
+    printf("4 - Converter de Octal\n");
+    printf("Escolha: ");
+    scanf("%d", &opcao);
+    limparBuffer();
+    
+    switch(opcao) {
+        case 1:
+            printf("Digite o valor decimal: ");
+            scanf("%d", &valorDecimal);
+            limparBuffer();
+            mostrarConversao(valorDecimal);
+            break;
+        case 2:
+            printf("Digite o valor hexadecimal (ex: 4C): ");
+            fgets(entrada, sizeof(entrada), stdin);
+            /* Remove o \n do final */
+            entrada[strcspn(entrada, "\n")] = '\0';
+            valorDecimal = hexadecimalParaDecimal(entrada);
+            mostrarConversao(valorDecimal);
+            break;
+        case 3:
+            printf("Digite o valor binario (ex: 1001100): ");
+            fgets(entrada, sizeof(entrada), stdin);
+            entrada[strcspn(entrada, "\n")] = '\0';
+            valorDecimal = binarioParaDecimal(entrada);
+            mostrarConversao(valorDecimal);
+            break;
+        case 4:
+            printf("Digite o valor octal (ex: 114): ");
+            fgets(entrada, sizeof(entrada), stdin);
+            entrada[strcspn(entrada, "\n")] = '\0';
+            valorDecimal = octalParaDecimal(entrada);
+            mostrarConversao(valorDecimal);
+            break;
+        default:
+            printf("Opcao invalida!\n");
+    }
+}
