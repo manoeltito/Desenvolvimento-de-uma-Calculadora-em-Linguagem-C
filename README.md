@@ -1,8 +1,6 @@
-Aqui está uma versão curta e objetiva do README para o GitHub, respeitando os acentos gráficos e sem uso de marcadores.
-
-===========================================
+======================================
 Calculadora em ANSI C89
-===========================================
+======================================
 
 Uma calculadora completa desenvolvida em linguagem C seguindo o padrão ANSI C89, o mais portável entre todos os compiladores. O programa oferece calculadora aritmética com as quatro operações básicas e calculadora do programador para conversão entre bases hexadecimal, decimal, octal e binária.
 
